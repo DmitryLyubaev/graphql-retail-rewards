@@ -1,0 +1,8 @@
+type Query { account(id: ID!): RewardsAccount }
+type Mutation { adjustPoints(input: AdjustPointsInput!): AdjustmentResult }
+input AdjustPointsInput { accountId: ID!, delta: Int!, reason: String!, requestId: String! }
+type RewardsAccount { id: ID!, balance: Int!, sequence: Int!, history(first: Int! = 2, after: String): AdjustmentConnection }
+type AdjustmentResult { accountId: ID!, sequence: Int!, requestId: String!, delta: Int!, reason: String!, balanceAfter: Int! }
+type AdjustmentConnection { upperBound: Int!, edges: [AdjustmentEdge!]!, pageInfo: PageInfo! }
+type AdjustmentEdge { node: AdjustmentResult!, cursor: String! }
+type PageInfo { hasNextPage: Boolean!, endCursor: String }

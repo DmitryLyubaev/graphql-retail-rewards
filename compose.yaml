@@ -1,4 +1,18 @@
 services:
+  app:
+    build: .
+    platform: linux/amd64
+    ports: ['127.0.0.1:${APP_PORT}:4000']
+    environment:
+      DDB_ENDPOINT: http://db:8000
+      TABLE_NAME: ${TABLE_NAME}
+      ALICE_TOKEN: ${ALICE_TOKEN}
+      BOB_TOKEN: ${BOB_TOKEN}
+      OP_TOKEN: ${OP_TOKEN}
+      CURSOR_SECRET: ${CURSOR_SECRET}
+      BARRIER_ID: ${BARRIER_ID:-}
+    mem_limit: 256m
+    cpus: 1
   db:
     image: amazon/dynamodb-local:3.3.2@sha256:6ada631ec7aa5fc83446855eb17233e3dad184fec47477e8140c6c569cfe0c86
     platform: linux/amd64
