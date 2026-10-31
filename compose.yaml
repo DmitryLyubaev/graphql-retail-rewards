@@ -1,0 +1,12 @@
+services:
+  db:
+    image: amazon/dynamodb-local:3.3.2@sha256:6ada631ec7aa5fc83446855eb17233e3dad184fec47477e8140c6c569cfe0c86
+    platform: linux/amd64
+    user: '0:0'
+    command: '-jar DynamoDBLocal.jar -sharedDb -dbPath /data'
+    volumes: ['data:/data']
+    ports: ['127.0.0.1:${DDB_PORT}:8000']
+    mem_limit: 512m
+    cpus: 1
+volumes:
+  data:
