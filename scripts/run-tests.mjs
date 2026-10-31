@@ -1,0 +1,11 @@
+import {readdirSync,mkdirSync} from 'node:fs';
+import {spawnSync} from 'node:child_process';
+mkdirSync('.local',{recursive:true});
+const compile=spawnSync(process.execPath,['node_modules/typescript/bin/tsc','--noCheck'],{stdio:'inherit'});
+if(compile.status!==0)process.exit(compile.status??1);
+await import('./copy-schema.mjs');
+const kind=process.argv[2];
+const files=readdirSync('dist/test').filter(f=>kind==='all'?/\.(unit|db|http)\.test\.js$/.test(f):f.endsWith(`.${kind}.test.js`)).sort().map(f=>`dist/test/${f}`);
+if(!files.length)throw new Error(`No ${kind} tests found`);
+const run=spawnSync(process.execPath,['--test','--test-concurrency=1',...files],{stdio:'inherit'});
+process.exit(run.status??1);

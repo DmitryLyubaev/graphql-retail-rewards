@@ -1,0 +1,26 @@
+{
+  "name": "graphql-retail-rewards",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {"node": "24.x"},
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsc && node scripts/copy-schema.mjs",
+    "test": "node scripts/run-tests.mjs all",
+    "test:unit": "node scripts/run-tests.mjs unit",
+    "test:db": "node scripts/run-tests.mjs db",
+    "test:http": "node scripts/run-tests.mjs http",
+    "check": "npm run typecheck && npm run build && npm test",
+    "local:up": "node scripts/local.mjs up",
+    "local:down": "node scripts/local.mjs down",
+    "demo": "node dist/scripts/acceptance.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "3.1161.0",
+    "@aws-sdk/lib-dynamodb": "3.1161.0",
+    "graphql": "17.0.2",
+    "graphql-yoga": "6.0.1"
+  },
+  "devDependencies": {"@types/node": "24.19.2", "typescript": "7.0.2"}
+}
