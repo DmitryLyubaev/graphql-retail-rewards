@@ -33,9 +33,12 @@ export function makeRewardsService({store,cursorSecret,runtime=defaultRuntime,af
         try{existing=await saved();if(existing)return existing;state=await store.getAccount(request.accountId,signal);}
         catch(e){if(e instanceof DomainError)throw e;throw new DomainError('INTERNAL_ERROR');}
         if(!state)throw new DomainError('NOT_FOUND');const balanceAfter=state.balance+request.delta;
-        if(balanceAfter<0)throw new DomainError('INSUFFICIENT_POINTS');
-        if(balanceAfter>MAX_BALANCE)throw new DomainError('BALANCE_LIMIT');
-        if(state.sequence>=MAX_SEQUENCE)throw new DomainError('SEQUENCE_LIMIT');
+        const rejection=balanceAfter<0?'INSUFFICIENT_POINTS':balanceAfter>MAX_BALANCE?'BALANCE_LIMIT':state.sequence>=MAX_SEQUENCE?'SEQUENCE_LIMIT':undefined;
+        if(rejection){
+          // Another same-key caller may have committed between the two strong reads.
+          try{const found=await saved();if(found)return found;}catch(error){if(error instanceof DomainError)throw error;throw new DomainError('INTERNAL_ERROR');}
+          throw new DomainError(rejection);
+        }
         const result:AdjustmentResult={accountId:request.accountId,sequence:state.sequence+1,requestId:input.requestId,delta:request.delta,reason:request.reason,balanceAfter};
         try{await store.commitAdjustment(state,result,request,signal);}
         catch(error){
