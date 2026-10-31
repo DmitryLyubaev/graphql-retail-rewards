@@ -1,11 +1,15 @@
 import {createServer} from 'node:http';
 import {createDynamoStore} from './dynamodb.js';import {makeRewardsService} from './rewards.js';import {createGraphqlHandler} from './graphql.js';import type {Actor} from './domain.js';
+import {createCommitBarrier} from './commit-barrier.js';
 const required=(name:string)=>{const value=process.env[name];if(!value)throw new Error(`Required environment variable ${name}`);return value;};
 const tokens=new Map<string,Actor>([[required('ALICE_TOKEN'),{id:'alice',role:'member',accountId:'A'}],[required('BOB_TOKEN'),{id:'bob',role:'member',accountId:'B'}],[required('OP_TOKEN'),{id:'op',role:'operator'}]]);
 if(tokens.size!==3||[...tokens.keys()].some(t=>!/^[a-f0-9]{64}$/.test(t)))throw new Error('Three distinct generated local tokens required');
 const secret=required('CURSOR_SECRET');if(!/^[a-f0-9]{64}$/.test(secret))throw new Error('Generated cursor secret required');
 const store=createDynamoStore({endpoint:required('DDB_ENDPOINT'),tableName:required('TABLE_NAME'),region:'local',credentials:{accessKeyId:'local',secretAccessKey:'local'}});
-const service=makeRewardsService({store,cursorSecret:Buffer.from(secret,'hex')});
+const barrierId=process.env.BARRIER_ID;
+if(barrierId&&process.env.ACCEPTANCE_PROFILE!=='1')throw new Error('Commit barrier requires explicit local acceptance profile');
+const observedStore={...store,commitAdjustment:async(...args:Parameters<typeof store.commitAdjustment>)=>{console.log(JSON.stringify({event:'transaction-attempt',requestId:args[1].requestId,accountId:args[1].accountId,sequence:args[1].sequence}));return store.commitAdjustment(...args);}};
+const service=makeRewardsService({store:observedStore,cursorSecret:Buffer.from(secret,'hex'),afterCommit:barrierId?createCommitBarrier(barrierId,event=>console.log(JSON.stringify(event))):undefined});
 const server=createServer({requestTimeout:10_000,headersTimeout:10_000,maxHeaderSize:8192},createGraphqlHandler(service,tokens));
 server.listen(4000,'0.0.0.0',()=>console.log(JSON.stringify({event:'ready'})));
 for(const signal of ['SIGTERM','SIGINT'] as const)process.on(signal,()=>server.close(()=>{store.close();process.exit(0);}));

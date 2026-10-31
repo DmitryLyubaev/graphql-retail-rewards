@@ -1,0 +1,70 @@
+{
+  "A1": {
+    "balances": [
+      115,
+      50
+    ],
+    "sequences": [
+      2,
+      0
+    ],
+    "effects": 2
+  },
+  "A3": {
+    "balances": [
+      115,
+      50
+    ],
+    "sequences": [
+      6,
+      0
+    ],
+    "effects": 6,
+    "pages": [
+      [
+        5,
+        4
+      ],
+      [
+        3,
+        2
+      ],
+      [
+        1
+      ]
+    ]
+  },
+  "A4": {
+    "balances": [
+      108,
+      50
+    ],
+    "sequences": [
+      2,
+      0
+    ],
+    "effects": 2
+  },
+  "A5": {
+    "balances": [
+      108,
+      10
+    ],
+    "sequences": [
+      8,
+      1
+    ],
+    "effects": 9
+  },
+  "A6": {
+    "balances": [
+      109,
+      50
+    ],
+    "sequences": [
+      1,
+      0
+    ],
+    "effects": 1
+  }
+}

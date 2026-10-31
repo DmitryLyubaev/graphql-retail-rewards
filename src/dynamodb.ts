@@ -8,7 +8,7 @@ export function createLocalClient(config:DynamoConfig){
   const u=new URL(config.endpoint);
   if(u.protocol!=='http:'||!(u.hostname==='127.0.0.1'||u.hostname==='db'&&u.port==='8000')||u.username||u.password||u.search||u.hash||u.pathname!=='/'||
     config.region!=='local'||config.credentials.accessKeyId!=='local'||config.credentials.secretAccessKey!=='local'||!/^p26-[a-zA-Z0-9_-]{1,240}$/.test(config.tableName))throw new Error('Explicit local DynamoDB configuration required');
-  return new DynamoDBClient({endpoint:config.endpoint,region:'local',credentials:{accessKeyId:'local',secretAccessKey:'local'},maxAttempts:1});
+  return new DynamoDBClient({endpoint:config.endpoint,region:'local',credentials:{accessKeyId:'local',secretAccessKey:'local'},maxAttempts:1,requestHandler:{connectionTimeout:1000,requestTimeout:1000,throwOnRequestTimeout:true}});
 }
 const sk=(sequence:number)=>`ADJ#${String(sequence).padStart(7,'0')}`;
 export function createDynamoStore(config:DynamoConfig):Store&{close():void}{

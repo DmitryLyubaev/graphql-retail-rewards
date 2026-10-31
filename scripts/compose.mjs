@@ -9,7 +9,7 @@ export function compose(runtime,args){
   const dockerArgs=['compose','--project-directory',path(root),'--env-file',path(runtime.envPath),'-p',runtime.project,'-f',path(resolve(root,'compose.yaml')),...args];
   const command=wsl?'wsl.exe':process.env.P26_DOCKER||'docker';
   const commandArgs=wsl?['-d','Ubuntu','--','docker',...dockerArgs]:dockerArgs;
-  const result=spawnSync(command,commandArgs,{encoding:'utf8',timeout:240_000,maxBuffer:8*1024*1024});
+  const result=spawnSync(command,commandArgs,{encoding:'utf8',timeout:Math.max(1,Math.min(240_000,(runtime.deadline??Infinity)-Date.now())),maxBuffer:8*1024*1024});
   if(result.status!==0)throw new Error(`Compose ${args[0]} failed: ${result.stderr||result.error||result.stdout}`);
   return result.stdout;
 }

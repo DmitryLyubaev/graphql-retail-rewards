@@ -11,6 +11,7 @@ services:
       OP_TOKEN: ${OP_TOKEN}
       CURSOR_SECRET: ${CURSOR_SECRET}
       BARRIER_ID: ${BARRIER_ID:-}
+      ACCEPTANCE_PROFILE: ${ACCEPTANCE_PROFILE:-0}
     mem_limit: 256m
     cpus: 1
   db:
