@@ -26,7 +26,7 @@ export async function runAcceptance(config:RunConfig):Promise<RunResult>{
   const tokens:Record<string,string>={alice:env.ALICE_TOKEN,bob:env.BOB_TOKEN,op:env.OP_TOKEN,unknown:'unknown'};
   const secret=Buffer.from(env.CURSOR_SECRET,'hex');const url=`http://127.0.0.1:${runtime.appPort}/graphql`;
   process.env.P26_ENDPOINT=`http://127.0.0.1:${runtime.dbPort}`;
-  const result:RunResult={runId,source:git('rev-parse','HEAD'),startedAt:new Date(started).toISOString(),status:'running',groups:[],requests:[],readbacks:0,tables:[],fixtureHash:hash(config.fixturePath),expectedHash:hash(config.expectedPath),lockHash:hash('package-lock.json'),node:process.version,images:compose(runtime,['images','--format','json'])};
+  const result:RunResult={runId,source:git('rev-parse','HEAD'),startedAt:new Date(started).toISOString(),status:'running',groups:[],requests:[],readbacks:0,tables:[],fixtureHash:hash(config.fixturePath),expectedHash:hash(config.expectedPath),lockHash:hash('package-lock.json'),node:process.version};
   let group='',table='',activeApp=false,activeGroup='';const events:any[]=[];result.events=events;
   const checkDeadline=()=>assert.ok(Date.now()<runtime.deadline!,'Acceptance deadline exceeded');
   function collectLogs(){if(!activeApp)return;const lines=compose(runtime,['logs','--no-color','--no-log-prefix','app']).split(/\r?\n/);for(const line of lines)try{events.push({group:activeGroup,table,...JSON.parse(line)});}catch{}activeApp=false;}
@@ -36,6 +36,7 @@ export async function runAcceptance(config:RunConfig):Promise<RunResult>{
     await seed(table,[{id:'A',openingBalance:overrides.seedBalance??100,balance:overrides.seedBalance??100,sequence:overrides.seedSequence??0},{id:'B',openingBalance:50,balance:50,sequence:0}]);
     setEnv(runtime.envPath,{TABLE_NAME:table,BARRIER_ID:barrier,ACCEPTANCE_PROFILE:barrier?'1':'0'});
     compose(runtime,['up','-d','--no-deps','app']);await ready();activeApp=true;activeGroup=group;
+    if(!result.images)result.images=compose(runtime,['images','--format','json']);
   }
   const snapshot=async()=>{checkDeadline();result.readbacks++;return readState(table);};
   async function request(payload:any,actor='op',options:{method?:string;raw?:string;headers?:Record<string,string>;phase?:string;timeout?:number}={}){
