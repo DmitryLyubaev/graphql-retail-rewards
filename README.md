@@ -2,7 +2,14 @@
 
 Bounded synthetic portfolio demonstration of server-side GraphQL, business permissions,
 stable history pagination and conditional DynamoDB transactions. Local-only, no AWS
-account, real rewards or production ledger. Implementation/acceptance is in progress.
+account, real rewards or production ledger.
+
+On 1 November 2026 one local A1-A7 sample passed on source 96dd384: 80 business
+requests, 20 stored effects, actual SIGKILL/restart/replay and owned cleanup in 195.202
+seconds. The corrected software suite passes 71 tests; the runtime sample predates the
+receipt-race fix and was not repeated on corrected source. One review Minor remains:
+managed SDK exception mapping is unverified. These are bounded local observations.
+See the [dated report](docs/local-report.md) and [access patterns](docs/access-patterns.md).
 
 ## Local setup
 
@@ -14,7 +21,8 @@ Nothing installs or reconfigures a daemon. Published inspection ports bind to lo
 2. `npm run local:up` starts the file-backed database and writes generated local
    tokens/ports into ignored `.local/runtime.env` and `.local/runtime.json`.
 3. `npm run check` runs typecheck/build, unit, actual DynamoDB and actual HTTP checks.
-4. `npm run demo` runs the separately bounded A1-A7 acceptance sample when implemented.
+4. `npm run demo` builds the app and runs a new separately bounded A1-A7 sample from
+   committed source/frozen fixtures. Previous outputs remain in separate ignored run folders.
 5. `npm run local:down` removes only the owned Compose containers/network and retains
    its named database volume and private evidence. No global prune or volume removal.
 
@@ -35,6 +43,9 @@ query { account(id: "A") { id balance history(first: 2) {
   upperBound edges { node { sequence delta balanceAfter } cursor }
   pageInfo { hasNextPage endCursor }
 } } }
+```
+
+```graphql
 mutation { adjustPoints(input: {accountId: "A", delta: 7,
   reason: "correction", requestId: "example-1"}) { sequence balanceAfter } }
 ```
@@ -47,4 +58,5 @@ Use at most one root field, depth six, forty expanded fields and page size 1..20
 
 Local emulation does not prove managed DynamoDB IAM, durability, throughput or actual
 managed transaction-conflict exceptions. Unit-injected errors and process interruption
-are reported separately. A measured report is pending the frozen runtime sample.
+are reported separately in the measured report. Local source only; integration/publication
+remain separate owner decisions.
