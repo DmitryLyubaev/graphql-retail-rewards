@@ -58,5 +58,5 @@ Use at most one root field, depth six, forty expanded fields and page size 1..20
 
 Local emulation does not prove managed DynamoDB IAM, durability, throughput or actual
 managed transaction-conflict exceptions. Unit-injected errors and process interruption
-are reported separately in the measured report. Local source only; integration/publication
-remain separate owner decisions.
+are reported separately in the measured report. Source is integrated on local main;
+publication remains a separate owner decision.

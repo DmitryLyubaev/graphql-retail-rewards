@@ -2,7 +2,7 @@
 
 Date: 1 November 2026, Australia/Brisbane. One measured local runtime sample, not a
 production or throughput study. One fresh whole-branch review and its bounded
-correction pass are complete. Local integration remains an owner decision.
+correction pass are complete. Owner-approved local integration completed on 1 November 2026.
 
 ## Source and reproducibility
 
@@ -123,3 +123,22 @@ and other-host portability are not claimed beyond the fixed fixtures/observed se
 The reviewer accidentally invoked the recompiling wrapper during intended read-only
 review. Only ignored compiled files were rewritten, all matched the saved measured
 snapshot by hash, and source/index/HEAD were unchanged. The original snapshot was untouched.
+
+## Local integration, 1 November 2026
+
+Dmitry chose local merge. Main fast-forwarded to 3530774, and a fresh primary-checkout
+locked offline install, typecheck/build and all 71 tests passed: 14 unit, eleven actual
+DynamoDB and 46 actual HTTP, zero failures/skips, test-run elapsed 25.021 seconds.
+This is software verification, not another canonical A1-A7 run.
+
+The retained volume's original A6 account/history/receipt readback matched the original
+measured result exactly after software verification. Verification containers/network
+were stopped/removed, with both owned ports closed. One named database volume remains.
+
+All 116 pre-integration archive files were SHA-256 reverified, and every retained evidence/
+workflow file in the worktree matched its primary archive copy before normal Git worktree
+retirement. The archived source bundle verified as a complete history. The merged worktree
+and codex/local-demo branch were removed; only the primary main checkout remains. The
+previously blocked standalone scratch-folder deletion is historical; ordinary Git worktree
+retirement occurred after the owner's explicit local-merge choice. No alternative standalone
+scratch deletion command was used. Product source/evidence remain local; no remote or push.
