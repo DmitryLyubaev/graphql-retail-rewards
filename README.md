@@ -1,8 +1,10 @@
 # GraphQL retail rewards
 
 Bounded synthetic portfolio demonstration of server-side GraphQL, business permissions,
-stable history pagination and conditional DynamoDB transactions. Local-only, no AWS
-account, real rewards or production ledger.
+stable history pagination and conditional DynamoDB transactions. The API runs locally
+with synthetic accounts and integer points.
+
+[Public repository](https://github.com/DmitryLyubaev/graphql-retail-rewards)
 
 On 1 November 2026 one local A1-A7 sample passed on source 96dd384: 80 business
 requests, 20 stored effects, actual SIGKILL/restart/replay and owned cleanup in 195.202
@@ -36,7 +38,7 @@ Schema: [src/schema.graphql](src/schema.graphql). One query reads an account and
 history; one mutation adjusts points. Alice reads A, Bob reads B; Op can read/adjust
 either. Use a generated token from the ignored env as `Authorization: Bearer <token>`.
 Caller-supplied role/account headers do not establish identity. Token fixtures are not
-an external identity provider. No product remote or public deployment is configured.
+an external identity provider. Runtime setup is local Docker Compose.
 
 ```graphql
 query { account(id: "A") { id balance history(first: 2) {
@@ -58,5 +60,5 @@ Use at most one root field, depth six, forty expanded fields and page size 1..20
 
 Local emulation does not prove managed DynamoDB IAM, durability, throughput or actual
 managed transaction-conflict exceptions. Unit-injected errors and process interruption
-are reported separately in the measured report. Source is integrated on local main;
-publication remains a separate owner decision.
+are reported separately in the measured report. Source and safe reports are public;
+generated credentials, raw evidence and database files remain outside Git.

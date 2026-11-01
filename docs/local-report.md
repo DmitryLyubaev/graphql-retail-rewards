@@ -90,7 +90,8 @@ private raw evidence. No other project's resources were removed. The database wa
 restarted solely for separate software checks, then stopped/removed again. Final
 closeout independently verified zero owned running containers and closed app/database
 ports; the named volume remains. Locked offline npm ci plus the full 71-test check passed.
-There is no public remote, hosted CI, cloud deployment, paid model call or customer use.
+At local closeout there was no public remote or hosted CI. No cloud deployment,
+paid model call or customer use occurred.
 
 This proves one bounded local GraphQL/NoSQL demonstration. DynamoDB Local does not throw
 managed TransactionConflictExceptions. Unit checks inject repository conflict/unknown
@@ -141,4 +142,20 @@ retirement. The archived source bundle verified as a complete history. The merge
 and codex/local-demo branch were removed; only the primary main checkout remains. The
 previously blocked standalone scratch-folder deletion is historical; ordinary Git worktree
 retirement occurred after the owner's explicit local-merge choice. No alternative standalone
-scratch deletion command was used. Product source/evidence remain local; no remote or push.
+scratch deletion command was used. At that checkpoint source/evidence were local,
+with no product remote or push. Publication is recorded separately below.
+
+## Public source publication, 1 November 2026
+
+Dmitry authorized publication. Source, synthetic fixtures, schema, README, access-pattern
+map and this safe measured report are published at
+[graphql-retail-rewards](https://github.com/DmitryLyubaev/graphql-retail-rewards).
+The repository has secret scanning and push protection enabled. Before publication,
+all 57 historical blobs were checked for generated run credentials, private-artifact
+paths and common credential signatures; all commit authors use the personal identity.
+Publication changes documentation only; executable source and the prior 71-test software
+verification are unchanged. The original A1-A7 sample remains tied to96dd384.
+
+Raw evidence, private archives, generated bearer/HMAC credentials, database files,
+node_modules and build output remain ignored and unpublished. No new canonical run,
+paid call, cloud/application deployment or hosted CI was added for this source publication.
