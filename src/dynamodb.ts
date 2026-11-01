@@ -30,9 +30,12 @@ export function createDynamoStore(config:DynamoConfig):Store&{close():void}{
         {Put:{TableName,Item:{PK:`REQUEST#${request.actorId}`,SK:result.requestId,request,result},ConditionExpression:'attribute_not_exists(PK)'}}
       ]}),options(signal));}
       catch(error){
-        const e=error as {name?:string;CancellationReasons?:{Code?:string}[]};
+        const e=error as {name?:string;CancellationReasons?:{Code?:string}[];$metadata?:{httpStatusCode?:number}};
+        const status=e.$metadata?.httpStatusCode;
+        // A server failure or unreadable success response does not establish rollback.
+        if(status!==undefined&&(status<400||status>=500))throw new StoreOutcomeUnknown();
         if(e.name==='TransactionConflictException'||e.name==='TransactionCanceledException'&&e.CancellationReasons?.some(r=>r.Code==='ConditionalCheckFailed'||r.Code==='TransactionConflict')&&e.CancellationReasons.every(r=>['None','ConditionalCheckFailed','TransactionConflict'].includes(r.Code??'None')))throw new StoreConflict();
-        if(['AbortError','TimeoutError','NetworkingError'].includes(e.name??'')||!(error instanceof Error)||!('$metadata' in error))throw new StoreOutcomeUnknown();
+        if(['AbortError','TimeoutError','NetworkingError'].includes(e.name??'')||!(error instanceof Error)||status===undefined)throw new StoreOutcomeUnknown();
         throw error;
       }
     }
