@@ -8,11 +8,12 @@ with synthetic accounts and integer points.
 
 [Public repository](https://github.com/DmitryLyubaev/graphql-retail-rewards)
 
-On 1 November 2026 one local A1-A7 sample passed on source 96dd384: 80 business
-requests, 20 stored effects, actual SIGKILL/restart/replay and owned cleanup in 195.202
-seconds. The corrected software suite passes 71 tests; the runtime sample predates the
-receipt-race fix and was not repeated on corrected source. One review Minor remains:
-managed SDK exception mapping is unverified. These are bounded local observations.
+On 1 November 2026 the final-source A1-A7 sample passed on 2aefcef: 80 business
+requests, 20 stored effects, actual SIGKILL/restart/replay and owned cleanup in 195.510
+seconds. All 86 software tests pass locally and in hosted CI. Fifteen direct SDK protocol
+tests cover adapter error classification. Both historical and final-source evidence are
+preserved; owned database volumes, app images and seven exact cache records were removed.
+These are bounded local observations.
 See the [dated report](docs/local-report.md) and [access patterns](docs/access-patterns.md).
 
 GitHub Actions runs the locked install, typecheck/build and existing unit, actual
@@ -24,7 +25,9 @@ demo is separate from software CI.
 
 Use Node 24, npm and existing Docker/Compose. On Windows the helper uses Docker in
 Ubuntu WSL if docker is not selected with the absolute `P26_DOCKER` executable path.
-Nothing installs or reconfigures a daemon. Published inspection ports bind to loopback.
+Nothing installs or reconfigures a daemon. Keep an Ubuntu WSL session active while running
+host-side checks, so WSL lifecycle shutdown does not stop Docker. Published inspection
+ports bind to loopback.
 
 1. `npm ci --ignore-scripts` then `npm run build`.
 2. `npm run local:up` starts the file-backed database and writes generated local
@@ -66,6 +69,7 @@ History traversal captures an upper sequence; newer adjustments require a new tr
 Use at most one root field, depth six, forty expanded fields and page size 1..20.
 
 Local emulation does not prove managed DynamoDB IAM, durability, throughput or actual
-managed transaction-conflict exceptions. Unit-injected errors and process interruption
+managed transaction-conflict behavior. Loopback protocol fixtures exercise actual SDK
+exception mapping with injected responses; process interruption and actual local races
 are reported separately in the measured report. Source and safe reports are public;
 generated credentials, raw evidence and database files remain outside Git.

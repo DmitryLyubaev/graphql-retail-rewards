@@ -1,8 +1,69 @@
 # Local rewards demonstration report
 
-Date: 1 November 2026, Australia/Brisbane. One measured local runtime sample, not a
-production or throughput study. One fresh whole-branch review and its bounded
-correction pass are complete. Owner-approved local integration completed on 1 November 2026.
+Date: 1 November 2026, Australia/Brisbane. Two separately identified local runtime
+samples, not a production or throughput study. The latest sample follows the owner-approved
+SDK coverage, final-source measurement and owned-storage cleanup follow-up. Earlier
+checkpoints below preserve the original result and its limitations at the time.
+
+## Final-source closeout
+
+Measured executable: `2aefcefc1fbff902ff47c7004e9577b3d4528fd4`.
+Run: `p26-mvwyd8je-run-a14d10da`. All A1-A7 groups passed once on this source, with
+unchanged frozen acceptance/expected fixtures and dependency lock. Runtime was
+`2026-11-01T05:14:34.625Z` to `2026-11-01T05:17:50.135Z` UTC, 15:14:34.625 to
+15:17:50.135 Brisbane. Acceptance including cleanup took 195.510 seconds; the whole
+command including image preparation took 226.893409 seconds and exited zero. No full
+study retry occurred. A 77-file source/fixture/compiled snapshot and source bundle are
+privately preserved. Final app image:
+`sha256:0656b860e893b9021f71a705d0920e1623fb31f59ff4ba57dacdafdb39428591`.
+
+The sample has 80 business requests plus one separate setup request, 49 business mutation
+submissions, 24 success responses, 24 rejected responses, one lost response, five successful
+replay responses and 20 independently verified business effects. There were 32 transaction
+submissions including setup, compared with 31 in the original sample; conditional retry
+counts vary with races. All 43 A2 rejections matched. A6 independently confirmed A=109,
+one history entry and one receipt before actual SIGKILL/socket loss; application/database
+restart and same-key replay preserved that exact stored state. A7 removed owned containers
+and networks, verified closed ports, and initially retained the database volume.
+
+Typecheck/build and all 86 tests passed from integrated primary main: 29 unit, eleven
+actual DynamoDB and 46 actual HTTP, zero failures/skips, 23.511 seconds test-run elapsed.
+[Hosted CI on this executable](https://github.com/DmitryLyubaev/graphql-retail-rewards/actions/runs/41275924187)
+also passed all 86 tests and owned cleanup. CI runs software fixtures separately from A1-A7.
+
+Fifteen new tests send real three-item TransactWriteItems requests through the actual SDK
+to a loopback protocol server, without mocking SDK send. They cover conditional and
+transaction conflicts, mixed/missing cancellation reasons, definitive validation/not-found/
+throttling failures, HTTP500/503, malformed HTTP200, disconnect and deadline/abort paths.
+The initial RED run exposed three classification failures: HTTP500, HTTP503 and malformed
+HTTP200. The adapter now treats those ambiguous write outcomes as StoreOutcomeUnknown,
+preserving definitive 4xx errors and existing conflict handling. All fifteen pass, each
+with one SDK request. A focused fresh review found no material findings. The earlier
+adapter-coverage Minor is resolved within this injected protocol scope; actual managed AWS
+fault behavior remains unmeasured.
+
+One earlier software check was interrupted when WSL stopped the Docker service. Container
+exit was143 and OOMKilled=false; this was an environment interruption, not a canonical run.
+The interrupted log is preserved. A bounded owned WSL keepalive supported the successful
+software checks and subsequent sample, with no daemon reconfiguration. Windows instructions
+now require an active WSL session during host checks.
+
+After evidence preservation, the owner-approved cleanup exported both stopped databases
+and both measured app images. Both SQLite exports passed integrity checks; archives and
+source/raw evidence were SHA-256 verified. Cleanup removed exactly two owned volumes,
+two app image tags, four owned build-history records and seven individually selected,
+reclaimable nonshared app cache records. Shared Node/DynamoDB base images and unrelated
+cache records were preserved. No global prune was used. Final absence/listener checks and
+archive receipts remain private. Earlier source snapshots, preparation failure and original
+sample evidence are retained unchanged. The merged follow-up branch and Git worktree registration were retired after
+archival. Git directory removal reported a Windows filesystem error; automatic approval
+review rejected the subsequent standalone deletion as "blocked by policy". The archived
+checkout directory remains; no deletion workaround was attempted. No cloud deployment, paid call or managed-service experiment occurred.
+
+## Historical original sample and subsequent checkpoints
+
+The remaining sections describe the earlier checkpoints. Their retained-volume and
+unverified-adapter statements describe those dates before the final-source closeout above.
 
 ## Source and reproducibility
 
