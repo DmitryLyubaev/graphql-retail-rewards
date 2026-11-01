@@ -1,5 +1,7 @@
 # GraphQL retail rewards
 
+[![CI](https://github.com/DmitryLyubaev/graphql-retail-rewards/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/DmitryLyubaev/graphql-retail-rewards/actions/workflows/ci.yml)
+
 Bounded synthetic portfolio demonstration of server-side GraphQL, business permissions,
 stable history pagination and conditional DynamoDB transactions. The API runs locally
 with synthetic accounts and integer points.
@@ -12,6 +14,11 @@ seconds. The corrected software suite passes 71 tests; the runtime sample predat
 receipt-race fix and was not repeated on corrected source. One review Minor remains:
 managed SDK exception mapping is unverified. These are bounded local observations.
 See the [dated report](docs/local-report.md) and [access patterns](docs/access-patterns.md).
+
+GitHub Actions runs the locked install, typecheck/build and existing unit, actual
+DynamoDB Local and actual HTTP tests in one Ubuntu job. It uses synthetic credentials
+and attempts owned-resource cleanup even after a failed step. The canonical A1-A7
+demo is separate from software CI.
 
 ## Local setup
 

@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24.14.0'
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Start local database and await readiness
+        run: |
+          npm run local:up
+          node --input-type=module <<'NODE'
+          import {readFileSync} from 'node:fs';
+          import {setTimeout as delay} from 'node:timers/promises';
+          import {DynamoDBClient,ListTablesCommand} from '@aws-sdk/client-dynamodb';
+          const {dbPort}=JSON.parse(readFileSync('.local/runtime.json','utf8'));
+          const client=new DynamoDBClient({
+            endpoint:`http://127.0.0.1:${dbPort}`,
+            region:'local',
+            credentials:{accessKeyId:'local',secretAccessKey:'local'},
+            maxAttempts:1,
+          });
+          try {
+            const deadline=Date.now()+30_000;
+            let ready=false;
+            while(Date.now()<deadline) {
+              try {
+                await client.send(new ListTablesCommand({}),{abortSignal:AbortSignal.timeout(1000)});
+                ready=true;
+                break;
+              } catch {}
+              await delay(200);
+            }
+            if(!ready)throw new Error('DynamoDB Local readiness exceeded 30 seconds');
+          } finally {
+            client.destroy();
+          }
+          NODE
+      - name: Typecheck, build and actual database/HTTP tests
+        run: npm run check
+      - name: Clean up owned resources
+        if: always()
+        run: |
+          if [[ -f .local/runtime.json ]]; then
+            npm run local:down
+          fi

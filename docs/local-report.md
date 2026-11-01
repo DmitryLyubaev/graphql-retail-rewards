@@ -159,3 +159,14 @@ verification are unchanged. The original A1-A7 sample remains tied to96dd384.
 Raw evidence, private archives, generated bearer/HMAC credentials, database files,
 node_modules and build output remain ignored and unpublished. No new canonical run,
 paid call, cloud/application deployment or hosted CI was added for this source publication.
+
+## Hosted software CI follow-up, 1 November 2026
+
+Following publication, Dmitry approved the recommended GitHub Actions job. The
+[CI workflow](https://github.com/DmitryLyubaev/graphql-retail-rewards/actions/workflows/ci.yml)
+runs on Ubuntu 24.04 with pinned checkout/setup-node actions, Node24.14.0 and read-only
+repository permissions. It installs locked dependencies, starts the pinned DynamoDB
+Local image, waits up to30 seconds for SDK readiness, then runs npm run check. Cleanup
+is attempted even after failure. Generated credentials/raw evidence are not uploaded.
+Hosted run status is linked from the README badge. This executes the existing software
+fixtures; it does not repeat the canonical A1-A7 sample or add cloud hosting.
